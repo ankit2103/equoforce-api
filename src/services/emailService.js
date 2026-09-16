@@ -1,6 +1,6 @@
 const config = require('../config');
 const mail = require('../utils/mail');
-const { addContactRow, setContactUnsubscribed } = require('../utils/spreadsheet/spreadsheet');
+const { addContactRow, addUnsubscribedEmail } = require('../utils/spreadsheet/spreadsheet');
 
 async function sendEmail({ to, subject, text, html, from }) {
   const mailOptions = {
@@ -26,18 +26,18 @@ async function sendContactInquiry({ firstName, lastName, businessEmail, companyN
 }
 
 async function markUnsubscribed({ email }) {
-  return setContactUnsubscribed(email);
+  return addUnsubscribedEmail(email);
 }
 
-async function sendUnsubscribeNotification({ email, firstName, lastName, companyName }) {
+async function sendUnsubscribeNotification({ email }) {
   if (config.marketingRecipients.length === 0) {
     console.warn('No marketing recipients configured; skipping unsubscribe notification.');
     return null;
   }
 
-  const subject = mail.unsubscribeNotificationSubject({ firstName, lastName });
-  const html = mail.unsubscribeNotificationHtml({ email, firstName, lastName, companyName });
-  const text = mail.unsubscribeNotificationText({ email, firstName, lastName, companyName });
+  const subject = mail.unsubscribeNotificationSubject({ email });
+  const html = mail.unsubscribeNotificationHtml({ email });
+  const text = mail.unsubscribeNotificationText({ email });
 
   return sendEmail({ to: config.marketingRecipients, subject, text, html });
 }

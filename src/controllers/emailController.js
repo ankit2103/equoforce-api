@@ -1,6 +1,6 @@
 const { validationResult } = require('express-validator');
 const config = require('../config');
-const { sendEmail, sendContactInquiry, markUnsubscribed } = require('../services/emailService');
+const { sendEmail, sendContactInquiry, markUnsubscribed, sendUnsubscribeNotification } = require('../services/emailService');
 const { successRes, errorRes } = require('../utils/common');
 
 async function sendEmailController(req, res) {
@@ -61,9 +61,13 @@ async function unsubscribeController(req, res) {
   const { email } = req.body;
 
   try {
-    const { updated } = await markUnsubscribed({ email });
+    const { updated, contact } = await markUnsubscribed({ email });
     if (updated === 0) {
       return errorRes(res, 404, 'Email not found in contacts.');
+    }
+    if (contact) {
+      sendUnsubscribeNotification({ email, ...contact })
+        .catch((err) => console.error('Unsubscribe notification error:', err.message));
     }
     return successRes(res, 200, { message: 'Unsubscribed successfully.', updated });
   } catch (err) {

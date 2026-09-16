@@ -29,4 +29,17 @@ async function markUnsubscribed({ email }) {
   return setContactUnsubscribed(email);
 }
 
-module.exports = { sendEmail, sendContactInquiry, markUnsubscribed };
+async function sendUnsubscribeNotification({ email, firstName, lastName, companyName }) {
+  if (config.marketingRecipients.length === 0) {
+    console.warn('No marketing recipients configured; skipping unsubscribe notification.');
+    return null;
+  }
+
+  const subject = mail.unsubscribeNotificationSubject({ firstName, lastName });
+  const html = mail.unsubscribeNotificationHtml({ email, firstName, lastName, companyName });
+  const text = mail.unsubscribeNotificationText({ email, firstName, lastName, companyName });
+
+  return sendEmail({ to: config.marketingRecipients, subject, text, html });
+}
+
+module.exports = { sendEmail, sendContactInquiry, markUnsubscribed, sendUnsubscribeNotification };

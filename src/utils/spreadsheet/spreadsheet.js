@@ -38,16 +38,25 @@ async function setContactUnsubscribed(email) {
 
   const rows = readRes.data.values || [];
   const matches = [];
+  let contact = null;
 
   rows.forEach((row, index) => {
     if (index === 0) return;
     if (row[2] && row[2].toLowerCase() === email.toLowerCase()) {
       matches.push(index + 1);
+      if (!contact) {
+        contact = {
+          firstName: row[0],
+          lastName: row[1],
+          email: row[2],
+          companyName: row[3],
+        };
+      }
     }
   });
 
   if (matches.length === 0) {
-    return { updated: 0 };
+    return { updated: 0, contact: null };
   }
 
   await sheets.spreadsheets.values.batchUpdate({
@@ -61,7 +70,7 @@ async function setContactUnsubscribed(email) {
     },
   });
 
-  return { updated: matches.length };
+  return { updated: matches.length, contact };
 }
 
 module.exports = { addContactRow, setContactUnsubscribed };

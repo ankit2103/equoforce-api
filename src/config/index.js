@@ -19,6 +19,11 @@ const config = {
     ? process.env.CONTACT_RECIPIENTS.split(',').map((e) => e.trim())
     : [],
 
+  marketingRecipients: process.env.MARKETING_RECIPIENTS
+    ? process.env.MARKETING_RECIPIENTS.split(',').map((e) => e.trim())
+    : [],
+
+
   spreadsheet: {
     id: process.env.SPREADSHEET_ID,
     credentialsPath: require('path').join(__dirname, '..', 'credentials.json'),

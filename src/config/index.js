@@ -25,7 +25,8 @@ const config = {
 
 
   spreadsheet: {
-    id: process.env.SPREADSHEET_ID,
+    contactId: process.env.CONTACT_SPREADSHEET_ID,
+    unsubscribeId: process.env.UNSUBSCRIBE_SPREADSHEET_ID,
     credentialsPath: require('path').join(__dirname, '..', 'credentials.json'),
   },
 };

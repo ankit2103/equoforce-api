@@ -1,6 +1,6 @@
 const config = require('../config');
 const mail = require('../utils/mail');
-const { addContactRow, setContactUnsubscribed } = require('../utils/spreadsheet/spreadsheet');
+const { addContactRow, findContactByEmail, addUnsubscribedEmail } = require('../utils/spreadsheet/spreadsheet');
 
 async function sendEmail({ to, subject, text, html, from }) {
   const mailOptions = {
@@ -26,7 +26,11 @@ async function sendContactInquiry({ firstName, lastName, businessEmail, companyN
 }
 
 async function markUnsubscribed({ email }) {
-  return setContactUnsubscribed(email);
+  const contact = await findContactByEmail(email);
+
+  await addUnsubscribedEmail(email);
+
+  return { found: !!contact, contact };
 }
 
 async function sendUnsubscribeNotification({ email, firstName, lastName, companyName }) {

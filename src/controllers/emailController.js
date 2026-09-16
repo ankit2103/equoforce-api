@@ -61,11 +61,9 @@ async function unsubscribeController(req, res) {
   const { email } = req.body;
 
   try {
-    const { contact } = await markUnsubscribed({ email });
-    if (contact) {
-      sendUnsubscribeNotification({ email, ...contact })
-        .catch((err) => console.error('Unsubscribe notification error:', err.message));
-    }
+    await markUnsubscribed({ email });
+    sendUnsubscribeNotification({ email })
+      .catch((err) => console.error('Unsubscribe notification error:', err.message));
     return successRes(res, 200, { message: 'Unsubscribed successfully.' });
   } catch (err) {
     console.error('Unsubscribe error:', err.message);

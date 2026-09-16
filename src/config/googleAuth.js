@@ -1,11 +1,15 @@
-const path = require('path');
 const { google } = require('googleapis');
 
-const credentialsPath = path.join(__dirname, '../../', 'credentials.json');
+function getCredentials() {
+  if (!process.env.GOOGLE_CREDENTIALS_JSON) {
+    throw new Error('GOOGLE_CREDENTIALS_JSON env var is not set.');
+  }
+  return JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON);
+}
 
 async function getSheetsClient() {
   const auth = new google.auth.GoogleAuth({
-    keyFile: credentialsPath,
+    credentials: getCredentials(),
     scopes: ['https://www.googleapis.com/auth/spreadsheets'],
   });
   const client = await auth.getClient();

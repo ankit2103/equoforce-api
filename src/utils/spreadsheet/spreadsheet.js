@@ -110,30 +110,4 @@ async function addContactRow({ firstName, lastName, businessEmail, companyName, 
   return response;
 }
 
-async function findContactByEmail(email) {
-  const sheets = await getSheetsClient();
-  const sheetName = await getFirstSheetName(sheets);
-
-  const readRes = await sheets.spreadsheets.values.get({
-    spreadsheetId: config.spreadsheet.contactId,
-    range: `${sheetName}!A:G`,
-  });
-
-  const rows = readRes.data.values || [];
-
-  for (let index = 1; index < rows.length; index += 1) {
-    const row = rows[index];
-    if (row[2] && row[2].toLowerCase() === email.toLowerCase()) {
-      return {
-        firstName: row[0],
-        lastName: row[1],
-        email: row[2],
-        companyName: row[3],
-      };
-    }
-  }
-
-  return null;
-}
-
-module.exports = { addContactRow, findContactByEmail, addUnsubscribedEmail };
+module.exports = { addContactRow, addUnsubscribedEmail };

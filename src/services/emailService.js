@@ -19,7 +19,7 @@ async function sendContactInquiry({ firstName, lastName, businessEmail, companyN
   const html = mail.contactHtml({ firstName, lastName, businessEmail, companyName, service, message });
   const text = mail.contactText({ firstName, lastName, businessEmail, companyName, service, message });
 
-  addContactRow({ firstName, lastName, businessEmail, companyName, service, message })
+  await addContactRow({ firstName, lastName, businessEmail, companyName, service, message })
     .catch((err) => console.error('Spreadsheet log error:', err.message));
 
   return sendEmail({ to: config.contactRecipients, subject, text, html });
